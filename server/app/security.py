@@ -10,6 +10,7 @@ import hashlib
 import hmac
 import secrets
 from datetime import datetime, timedelta, timezone
+from typing import Optional
 
 import jwt
 from fastapi import Depends, HTTPException
@@ -70,11 +71,11 @@ def get_current_user(
 
 # Optional dependency: returns the user if a valid token is present, else None.
 def get_current_user_optional(
-    credentials: HTTPAuthorizationCredentials | None = Depends(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(
         HTTPBearer(auto_error=False)
     ),
     db: Session = Depends(get_db),
-) -> User | None:
+) -> Optional[User]:
     if credentials is None:
         return None
     try:

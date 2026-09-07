@@ -20,6 +20,8 @@ exempt so that a learner can always reset the mode even if it is misbehaving.
 """
 from __future__ import annotations
 
+from typing import Optional
+
 from fastapi import Request
 
 from .config import SLOW_DELAY_SECONDS
@@ -72,7 +74,7 @@ def _is_exempt(path: str) -> bool:
     )
 
 
-def resolve_scenario(request: Request) -> str | None:
+def resolve_scenario(request: Request) -> Optional[str]:
     """Return the canonical scenario for this request, or None."""
     if _is_exempt(request.url.path):
         return None

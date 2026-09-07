@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -14,8 +16,8 @@ router = APIRouter(prefix="/api/audit", tags=["audit"])
 def list_audit(
     db: Session = Depends(get_db),
     _: User = Depends(require_role("admin", "manager")),
-    entity_type: str | None = None,
-    entity_id: int | None = None,
+    entity_type: Optional[str] = None,
+    entity_id: Optional[int] = None,
     limit: int = 100,
 ):
     query = db.query(AuditLog)

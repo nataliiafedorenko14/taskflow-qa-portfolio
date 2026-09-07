@@ -6,6 +6,8 @@ assignee/reporter snapshots), so they are assembled here instead of relying on
 """
 from __future__ import annotations
 
+from typing import Optional
+
 from .models import AuditLog, Comment, Notification, ProjectMember, Tag, Task, User
 from .schemas import (
     AuditOut,
@@ -19,7 +21,7 @@ from .schemas import (
 )
 
 
-def user_to_out(user: User | None) -> UserOut | None:
+def user_to_out(user: Optional[User]) -> Optional[UserOut]:
     if user is None:
         return None
     return UserOut.model_validate(user)

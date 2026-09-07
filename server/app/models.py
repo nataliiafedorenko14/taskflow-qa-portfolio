@@ -10,6 +10,7 @@ relationships to verify: foreign keys, cascades, many-to-many and history.
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from typing import Optional
 
 from sqlalchemy import (
     Column,
@@ -137,19 +138,19 @@ class Task(TimestampMixin, Base):
     project_id: Mapped[int] = mapped_column(
         ForeignKey("projects.id", ondelete="CASCADE"), nullable=False
     )
-    assignee_id: Mapped[int | None] = mapped_column(
+    assignee_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
-    reporter_id: Mapped[int | None] = mapped_column(
+    reporter_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
-    due_date: Mapped[datetime | None] = mapped_column(Date, nullable=True)
+    due_date: Mapped[Optional[datetime]] = mapped_column(Date, nullable=True)
 
     project: Mapped["Project"] = relationship(back_populates="tasks", foreign_keys=[project_id])
-    assignee: Mapped["User | None"] = relationship(
+    assignee: Mapped[Optional["User"]] = relationship(
         foreign_keys=[assignee_id], back_populates="assigned_tasks"
     )
-    reporter: Mapped["User | None"] = relationship(
+    reporter: Mapped[Optional["User"]] = relationship(
         foreign_keys=[reporter_id], back_populates="reported_tasks"
     )
     comments: Mapped[list["Comment"]] = relationship(
@@ -189,7 +190,7 @@ class Comment(TimestampMixin, Base):
     body: Mapped[str] = mapped_column(Text, nullable=False)
 
     task: Mapped["Task"] = relationship(back_populates="comments", foreign_keys=[task_id])
-    author: Mapped["User | None"] = relationship(
+    author: Mapped[Optional["User"]] = relationship(
         back_populates="comments", foreign_keys=[author_id]
     )
 
@@ -214,7 +215,7 @@ class Attachment(TimestampMixin, Base):
     filename: Mapped[str] = mapped_column(String(255), nullable=False)
     url: Mapped[str] = mapped_column(Text, nullable=False, default="")
     size: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)
-    uploaded_by: Mapped[int | None] = mapped_column(
+    uploaded_by: Mapped[Optional[int]] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
 
@@ -232,12 +233,12 @@ class Notification(TimestampMixin, Base):
     message: Mapped[str] = mapped_column(Text, nullable=False, default="")
     payload: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     read: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-    task_id: Mapped[int | None] = mapped_column(
+    task_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("tasks.id", ondelete="CASCADE"), nullable=True
     )
 
     user: Mapped["User"] = relationship(back_populates="notifications", foreign_keys=[user_id])
-    task: Mapped["Task | None"] = relationship(
+    task: Mapped[Optional["Task"]] = relationship(
         back_populates="notifications", foreign_keys=[task_id]
     )
 
@@ -249,7 +250,7 @@ class AuditLog(Base):
     entity_type: Mapped[str] = mapped_column(String(64), nullable=False)
     entity_id: Mapped[int] = mapped_column(Integer, nullable=False)
     action: Mapped[str] = mapped_column(String(64), nullable=False)
-    actor_id: Mapped[int | None] = mapped_column(
+    actor_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
     before: Mapped[dict] = mapped_column(JSON, nullable=True)

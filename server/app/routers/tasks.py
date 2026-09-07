@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import and_, exists, or_
 from sqlalchemy.orm import Session
@@ -55,7 +57,7 @@ def _sync_tags(db: Session, task: Task, names: list[str]) -> None:
             task.tags.append(tag)
 
 
-def _notify(db: Session, user_id: int | None, ntype: str, message: str, task: Task) -> None:
+def _notify(db: Session, user_id: Optional[int], ntype: str, message: str, task: Task) -> None:
     if user_id is None:
         return
     db.add(Notification(
@@ -110,13 +112,13 @@ def create_task(
 def list_tasks(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
-    status: str | None = None,
-    priority: str | None = None,
-    assignee_id: int | None = None,
-    project_id: int | None = None,
-    tag: str | None = None,
-    q: str | None = None,
-    sort: str | None = None,
+    status: Optional[str] = None,
+    priority: Optional[str] = None,
+    assignee_id: Optional[int] = None,
+    project_id: Optional[int] = None,
+    tag: Optional[str] = None,
+    q: Optional[str] = None,
+    sort: Optional[str] = None,
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
 ):

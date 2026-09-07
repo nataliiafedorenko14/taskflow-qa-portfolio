@@ -5,7 +5,7 @@ snapshots. QA learners can then assert history after API calls.
 """
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Optional
 
 from sqlalchemy.orm import Session
 
@@ -18,9 +18,9 @@ def log_event(
     entity_type: str,
     entity_id: int,
     action: str,
-    actor_id: int | None = None,
-    before: dict[str, Any] | None = None,
-    after: dict[str, Any] | None = None,
+    actor_id: Optional[int] = None,
+    before: Optional[dict[str, Any]] = None,
+    after: Optional[dict[str, Any]] = None,
 ) -> AuditLog:
     entry = AuditLog(
         entity_type=entity_type,

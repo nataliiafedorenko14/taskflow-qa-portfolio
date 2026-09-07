@@ -8,6 +8,8 @@ Access model:
 """
 from __future__ import annotations
 
+from typing import Optional
+
 from fastapi import HTTPException, Depends
 from sqlalchemy.orm import Session
 
@@ -26,7 +28,7 @@ def require_role(*roles: str):
     return _dep
 
 
-def get_membership(db: Session, project_id: int, user_id: int) -> ProjectMember | None:
+def get_membership(db: Session, project_id: int, user_id: int) -> Optional[ProjectMember]:
     return (
         db.query(ProjectMember)
         .filter_by(project_id=project_id, user_id=user_id)
@@ -84,7 +86,7 @@ def get_task_for_user(db: Session, task_id: int, user: User) -> Task:
     return task
 
 
-def resolve_assignee(db: Session, project_id: int, assignee_id: int | None) -> int | None:
+def resolve_assignee(db: Session, project_id: int, assignee_id: Optional[int]) -> Optional[int]:
     """An assignee must be a member of the task's project (or None to clear)."""
     if assignee_id is None:
         return None
