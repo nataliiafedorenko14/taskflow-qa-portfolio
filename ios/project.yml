@@ -1,0 +1,80 @@
+name: TaskFlow
+options:
+  bundleIdPrefix: local.taskflow
+  deploymentTarget:
+    iOS: "16.0"
+  developmentLanguage: en
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    CODE_SIGNING_ALLOWED: "NO"
+    CODE_SIGNING_REQUIRED: "NO"
+    TARGETED_DEVICE_FAMILY: "1"
+
+targets:
+  TaskFlow:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - path: TaskFlow
+        excludes:
+          - "Info.plist"
+    info:
+      path: TaskFlow/Info.plist
+      properties:
+        CFBundleDisplayName: TaskFlow
+        CFBundleShortVersionString: "1.0.0"
+        CFBundleVersion: "1"
+        UILaunchScreen:
+          UIColorName: ""
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        CFBundleURLTypes:
+          - CFBundleURLName: local.taskflow
+            CFBundleURLSchemes:
+              - taskflow
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+
+  TaskFlowTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - TaskFlowTests
+    dependencies:
+      - target: TaskFlow
+
+  TaskFlowUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - TaskFlowUITests
+    dependencies:
+      - target: TaskFlow
+
+schemes:
+  TaskFlow:
+    build:
+      targets:
+        TaskFlow: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - TaskFlowTests
+        - TaskFlowUITests
+    profile:
+      config: Debug
+    analyze:
+      config: Debug
+    archive:
+      config: Release
