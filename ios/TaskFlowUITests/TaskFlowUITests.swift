@@ -166,3 +166,85 @@ final class TaskFlowUITests: XCTestCase {
                       "List did not recover after retry")
     }
 }
+
+    // Тесты Наташи
+func testLogin() {
+    let app = XCUIApplication()
+    app.launch()
+
+    let emailField = app.textFields["login.emailTextField"]
+    let passwordField = app.secureTextFields["login.passwordTextField"]
+    let loginButton = app.buttons["login.submitButton"]
+
+    emailField.tap()
+    emailField.typeText("member123")
+
+    passwordField.tap()
+    passwordField.typeText("member")
+    
+    loginButton.tap()
+}
+
+func testRegistration() {
+    let app = XCUIApplication()
+    app.launch()
+
+    // Переходим на экран регистрации
+    let registerButton = app.buttons["login.registerButton"]
+    registerButton.tap()
+
+    // Находим поля регистрации
+    let emailField = app.textFields["register.emailTextField"]
+    let nameField = app.textFields["register.nameTextField"]
+    let passwordField = app.secureTextFields["register.passwordTextField"]
+
+    // Заполняем email
+    emailField.tap()
+    emailField.typeText("member123@test.com")
+
+    // Заполняем имя
+    nameField.tap()
+    nameField.typeText("Member")
+
+    // Заполняем пароль
+    passwordField.tap()
+    passwordField.typeText("member123")
+
+    // Нажимаем кнопку регистрации
+    let submitButton = app.buttons["register.submitButton"]
+    submitButton.tap()
+}
+
+func testRegistrationWithInvalidEmail() {
+    let app = XCUIApplication()
+    app.launch()
+
+    // Переходим на экран регистрации
+    let registerButton = app.buttons["login.registerButton"]
+    registerButton.tap()
+
+    // Находим поля
+    let emailField = app.textFields["register.emailTextField"]
+    let nameField = app.textFields["register.nameTextField"]
+    let passwordField = app.secureTextFields["register.passwordTextField"]
+    let submitButton = app.buttons["register.submitButton"]
+
+    // Заполняем форму некорректным email
+    emailField.tap()
+    emailField.typeText("member123")
+
+    nameField.tap()
+    nameField.typeText("Member")
+
+    passwordField.tap()
+    passwordField.typeText("member123")
+
+    // Пытаемся зарегистрироваться
+    submitButton.tap()
+
+    // Проверяем, что регистрация не произошла
+    XCTAssertTrue(
+        emailField.exists,
+        "Пользователь покинул экран регистрации с некорректным email"
+    )
+}
