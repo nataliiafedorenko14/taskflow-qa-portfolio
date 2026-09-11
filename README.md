@@ -216,7 +216,7 @@ Unit-тесты (без сервера):
 cd ios
 xcodebuild -project TaskFlow.xcodeproj -scheme TaskFlow \
   -destination 'platform=iOS Simulator,name=iPhone 16' \
-  -only-testing:TaskFlowTests test CODE_SIGNING_ALLOWED=NO
+  -only-testing:TaskFlowTests test
 ```
 
 UI-тесты (нужен запущенный сервер `./run.sh`):
@@ -226,7 +226,7 @@ UI-тесты (нужен запущенный сервер `./run.sh`):
 cd ios
 xcodebuild -project TaskFlow.xcodeproj -scheme TaskFlow \
   -destination 'platform=iOS Simulator,name=iPhone 16' \
-  -only-testing:TaskFlowUITests test CODE_SIGNING_ALLOWED=NO
+  -only-testing:TaskFlowUITests test
 ```
 
 UI-тесты запускают приложение с переменной окружения `UITEST_FRESH=1`, поэтому каждое

@@ -25,6 +25,9 @@ struct LoginView: View {
 
                 SecureField("Password", text: $password)
                     .textFieldStyle(.roundedBorder)
+                    .textContentType(.password)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
                     .accessibilityIdentifier("login.passwordTextField")
 
                 if let error {

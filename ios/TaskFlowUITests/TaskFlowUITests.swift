@@ -14,6 +14,7 @@ final class TaskFlowUITests: XCTestCase {
         continueAfterFailure = false
         app = XCUIApplication()
         app.launchEnvironment["UITEST_FRESH"] = "1"
+        app.launchEnvironment["UITEST_DISABLE_ANIMATIONS"] = "1"
         app.launch()
         // Wait for the launch screen / login. Cold simulator starts can be slow,
         // so allow plenty of time on the first launch.
@@ -29,6 +30,14 @@ final class TaskFlowUITests: XCTestCase {
         pwd.tap()
         pwd.typeText(password)
         app.buttons["login.submitButton"].tap()
+    }
+
+    private func openMainProject() {
+        let row = app.buttons["projects.row.Mobile QA Automation"]
+        XCTAssertTrue(row.waitForExistence(timeout: 20), "Main project did not appear")
+        XCTAssertTrue(row.wait(for: \.isHittable, toEqual: true, timeout: 10),
+                      "Main project row was not hittable")
+        row.tap()
     }
 
     // MARK: - Auth
@@ -49,8 +58,7 @@ final class TaskFlowUITests: XCTestCase {
 
     func testCreateTaskAppearsInList() {
         login()
-        XCTAssertTrue(app.staticTexts["Mobile QA Automation"].waitForExistence(timeout: 20))
-        app.staticTexts["Mobile QA Automation"].tap()
+        openMainProject()
 
         app.buttons["tasks.createButton"].tap()
         let title = app.textFields["task.titleTextField"]
@@ -66,8 +74,7 @@ final class TaskFlowUITests: XCTestCase {
 
     func testAddComment() {
         login()
-        XCTAssertTrue(app.staticTexts["Mobile QA Automation"].waitForExistence(timeout: 20))
-        app.staticTexts["Mobile QA Automation"].tap()
+        openMainProject()
         XCTAssertTrue(app.cells.firstMatch.waitForExistence(timeout: 10))
         app.cells.firstMatch.tap()
 
@@ -83,8 +90,7 @@ final class TaskFlowUITests: XCTestCase {
 
     func testSearchTasks() {
         login()
-        XCTAssertTrue(app.staticTexts["Mobile QA Automation"].waitForExistence(timeout: 20))
-        app.staticTexts["Mobile QA Automation"].tap()
+        openMainProject()
 
         let search = app.textFields["tasks.searchField"]
         XCTAssertTrue(search.waitForExistence(timeout: 10))
@@ -96,8 +102,7 @@ final class TaskFlowUITests: XCTestCase {
 
     func testFilterByStatus() {
         login()
-        XCTAssertTrue(app.staticTexts["Mobile QA Automation"].waitForExistence(timeout: 20))
-        app.staticTexts["Mobile QA Automation"].tap()
+        openMainProject()
         XCTAssertTrue(app.cells.firstMatch.waitForExistence(timeout: 10))
 
         app.buttons["tasks.filterButton"].tap()

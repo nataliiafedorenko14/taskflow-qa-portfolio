@@ -10,8 +10,6 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.0"
-    CODE_SIGNING_ALLOWED: "NO"
-    CODE_SIGNING_REQUIRED: "NO"
     TARGETED_DEVICE_FAMILY: "1"
 
 targets:
@@ -46,6 +44,9 @@ targets:
     type: bundle.unit-test
     platform: iOS
     deploymentTarget: "16.0"
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: "YES"
     sources:
       - TaskFlowTests
     dependencies:
@@ -55,6 +56,9 @@ targets:
     type: bundle.ui-testing
     platform: iOS
     deploymentTarget: "16.0"
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: "YES"
     sources:
       - TaskFlowUITests
     dependencies:

@@ -44,6 +44,7 @@ struct ProjectsListView: View {
                             Text(project.description).font(.caption).foregroundStyle(.secondary)
                         }
                     }
+                    .accessibilityIdentifier("projects.row.\(project.name)")
                 }
             }
             .listStyle(.insetGrouped)
