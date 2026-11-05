@@ -18,14 +18,14 @@ struct LoginView: View {
 
                 TextField("Email", text: $email)
                     .textFieldStyle(.roundedBorder)
-                    .textContentType(.emailAddress)
+                    .textContentType(isUITesting ? nil : .emailAddress)
                     .keyboardType(.emailAddress)
                     .autocorrectionDisabled()
                     .accessibilityIdentifier("login.emailTextField")
 
                 SecureField("Password", text: $password)
                     .textFieldStyle(.roundedBorder)
-                    .textContentType(.password)
+                    .textContentType(isUITesting ? nil : .password)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .accessibilityIdentifier("login.passwordTextField")
@@ -55,6 +55,13 @@ struct LoginView: View {
             .navigationTitle("Sign In")
             .sheet(isPresented: $showRegister) { RegisterView() }
         }
+    }
+
+    /// Password AutoFill / "Save Password" is triggered by `.password` content type
+    /// and blocks XCUITest after a successful login. Skip it while UI tests run.
+    private var isUITesting: Bool {
+        let env = ProcessInfo.processInfo.environment
+        return env["UITEST_FRESH"] == "1" || env["XCTestConfigurationFilePath"] != nil
     }
 
     private func signIn() {

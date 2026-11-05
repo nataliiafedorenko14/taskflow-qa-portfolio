@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 
 /// App-wide observable state: the API client, the signed-in user, deep links.
+@MainActor
 final class AppState: ObservableObject {
 
     @Published var api: APIClient

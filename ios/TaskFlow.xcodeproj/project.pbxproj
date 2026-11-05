@@ -13,6 +13,9 @@
 		3FF95C8397ACA7D6D087172A /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 939DF69173F1CA611C966B1A /* LoginView.swift */; };
 		485C66DCF6232DE50D832A50 /* TokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40D04E5743BC24CBA127B193 /* TokenStore.swift */; };
 		5141F0CD7BC535DAC2DDBC52 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F367937CF695030CA5A76C /* RegisterView.swift */; };
+		6E7FE7B9305832A000616AEF /* AuthUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7FE7B83058328A00616AEF /* AuthUITests.swift */; };
+		6E7FE7BD3058545C00616AEF /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7FE7BB3058545900616AEF /* Utils.swift */; };
+		6E7FE7BF3059859400616AEF /* RegistrationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7FE7BE3059857600616AEF /* RegistrationUITests.swift */; };
 		7F4CD915DF5D2EF557BE0FAE /* TaskDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19DB7F3FA5CBF4009E9FB78 /* TaskDetailView.swift */; };
 		843BFBCEE21B95CB71D55D7A /* TasksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14338AF97F61A0274CB6FD2F /* TasksListView.swift */; };
 		8C8F74929EC82B7397B1D0DC /* TaskFlowApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCA763C8691777376935C1E1 /* TaskFlowApp.swift */; };
@@ -53,6 +56,9 @@
 		420F8D133599640699CFDD77 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		46F367937CF695030CA5A76C /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
 		5296798CA54741B2001D7524 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		6E7FE7B83058328A00616AEF /* AuthUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUITests.swift; sourceTree = "<group>"; };
+		6E7FE7BB3058545900616AEF /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		6E7FE7BE3059857600616AEF /* RegistrationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationUITests.swift; sourceTree = "<group>"; };
 		7EF2770D97AC4130DAB92AB8 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8B03F381BEFB9CCC4C92311E /* ProjectsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectsListView.swift; sourceTree = "<group>"; };
 		939DF69173F1CA611C966B1A /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -68,6 +74,14 @@
 		E6FF2BD4A15C028AD24D7738 /* TaskFlow.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TaskFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCA763C8691777376935C1E1 /* TaskFlowApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskFlowApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		6E7FE7BA3058545100616AEF /* Utils */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Utils;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXGroup section */
 		207E24C944C19F44134D97F7 /* Products */ = {
@@ -121,6 +135,10 @@
 		5F51A7B46266027324A3F027 /* TaskFlowUITests */ = {
 			isa = PBXGroup;
 			children = (
+				6E7FE7BB3058545900616AEF /* Utils.swift */,
+				6E7FE7B83058328A00616AEF /* AuthUITests.swift */,
+				6E7FE7BE3059857600616AEF /* RegistrationUITests.swift */,
+				6E7FE7BA3058545100616AEF /* Utils */,
 				A6B97AD9C98144C3DDC026DB /* TaskFlowUITests.swift */,
 			);
 			path = TaskFlowUITests;
@@ -190,6 +208,9 @@
 			);
 			dependencies = (
 				617EC37B142833044629A701 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				6E7FE7BA3058545100616AEF /* Utils */,
 			);
 			name = TaskFlowUITests;
 			packageProductDependencies = (
@@ -286,7 +307,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E7FE7BF3059859400616AEF /* RegistrationUITests.swift in Sources */,
 				FBE4361874832CBF13BEFD8B /* TaskFlowUITests.swift in Sources */,
+				6E7FE7B9305832A000616AEF /* AuthUITests.swift in Sources */,
+				6E7FE7BD3058545C00616AEF /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

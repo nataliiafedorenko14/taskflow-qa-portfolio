@@ -7,9 +7,9 @@ import XCTest
 /// makes the app reset the server DB to the seed baseline, reset the network
 /// mode, and start logged out — so tests are independent.
 final class TaskFlowUITests: XCTestCase {
-
+    
     var app: XCUIApplication!
-
+    
     override func setUp() {
         continueAfterFailure = false
         app = XCUIApplication()
@@ -21,7 +21,7 @@ final class TaskFlowUITests: XCTestCase {
         XCTAssertTrue(app.buttons["login.submitButton"].waitForExistence(timeout: 45),
                       "Login screen did not appear")
     }
-
+    
     /// Log in as the seeded `member` (email is pre-filled; only the password
     /// needs to be entered). `password` lets a test use a wrong value.
     private func login(password: String = "member123") {
@@ -31,7 +31,7 @@ final class TaskFlowUITests: XCTestCase {
         pwd.typeText(password)
         app.buttons["login.submitButton"].tap()
     }
-
+    
     private func openMainProject() {
         let row = app.buttons["projects.row.Mobile QA Automation"]
         XCTAssertTrue(row.waitForExistence(timeout: 20), "Main project did not appear")
@@ -39,59 +39,59 @@ final class TaskFlowUITests: XCTestCase {
                       "Main project row was not hittable")
         row.tap()
     }
-
+    
     // MARK: - Auth
-
+    
     func testLoginSuccessShowsProjects() {
         login()
         XCTAssertTrue(app.staticTexts["Mobile QA Automation"].waitForExistence(timeout: 20),
                       "Projects did not appear after login")
     }
-
+    
     func testLoginFailureShowsError() {
         login(password: "wrong")
         XCTAssertTrue(app.staticTexts["login.errorLabel"].waitForExistence(timeout: 10),
                       "Error label did not appear on bad credentials")
     }
-
+    
     // MARK: - Tasks
-
+    
     func testCreateTaskAppearsInList() {
         login()
         openMainProject()
-
+        
         app.buttons["tasks.createButton"].tap()
         let title = app.textFields["task.titleTextField"]
         XCTAssertTrue(title.waitForExistence(timeout: 10))
         title.tap()
         title.typeText("UI Test Task")
-
+        
         app.buttons["task.saveButton"].tap()
-
+        
         XCTAssertTrue(app.staticTexts["UI Test Task"].waitForExistence(timeout: 15),
                       "Created task did not appear in the list")
     }
-
+    
     func testAddComment() {
         login()
         openMainProject()
         XCTAssertTrue(app.cells.firstMatch.waitForExistence(timeout: 10))
         app.cells.firstMatch.tap()
-
+        
         let field = app.textFields["task.commentTextField"]
         XCTAssertTrue(field.waitForExistence(timeout: 10))
         field.tap()
         field.typeText("UI Test Comment")
         app.buttons["task.addCommentButton"].tap()
-
+        
         XCTAssertTrue(app.staticTexts["UI Test Comment"].waitForExistence(timeout: 10),
                       "Comment did not appear")
     }
-
+    
     func testSearchTasks() {
         login()
         openMainProject()
-
+        
         let search = app.textFields["tasks.searchField"]
         XCTAssertTrue(search.waitForExistence(timeout: 10))
         search.tap()
@@ -99,12 +99,12 @@ final class TaskFlowUITests: XCTestCase {
         XCTAssertTrue(app.cells.firstMatch.waitForExistence(timeout: 10),
                       "Search returned no rows")
     }
-
+    
     func testFilterByStatus() {
         login()
         openMainProject()
         XCTAssertTrue(app.cells.firstMatch.waitForExistence(timeout: 10))
-
+        
         app.buttons["tasks.filterButton"].tap()
         XCTAssertTrue(app.buttons["filter.status.todo"].waitForExistence(timeout: 10))
         app.buttons["filter.status.todo"].tap()
@@ -114,9 +114,9 @@ final class TaskFlowUITests: XCTestCase {
         XCTAssertTrue(app.cells.firstMatch.waitForExistence(timeout: 10),
                       "Filtered list did not reload")
     }
-
+    
     // MARK: - Session
-
+    
     func testLogoutReturnsToLogin() {
         login()
         XCTAssertTrue(app.tabBars.buttons["Profile"].waitForExistence(timeout: 20))
@@ -125,18 +125,18 @@ final class TaskFlowUITests: XCTestCase {
         XCTAssertTrue(app.buttons["login.submitButton"].waitForExistence(timeout: 10),
                       "Did not return to login after logout")
     }
-
+    
     // MARK: - Network error + retry
-
+    
     func testNetworkErrorShowsRetryAndRecovers() {
         login()
         XCTAssertTrue(app.tabBars.buttons["Profile"].waitForExistence(timeout: 20))
-
+        
         // Switch the server into the 500 mode.
         app.tabBars.buttons["Profile"].tap()
         XCTAssertTrue(app.buttons["profile.networkMode.error500"].waitForExistence(timeout: 10))
         app.buttons["profile.networkMode.error500"].tap()
-
+        
         // Returning to Projects forces a reload. Depending on the platform it
         // either fails immediately (no cells to swipe) or still shows cached
         // rows (swipe to refresh). Handle both so the test is stable.
@@ -147,14 +147,14 @@ final class TaskFlowUITests: XCTestCase {
         }
         XCTAssertTrue(app.buttons["error.retryButton"].waitForExistence(timeout: 10),
                       "Retry button did not appear on network error")
-
+        
         // Restore normal mode and give the server a moment to apply it.
         app.tabBars.buttons["Profile"].tap()
         XCTAssertTrue(app.buttons["profile.networkMode.normal"].waitForExistence(timeout: 10))
         app.buttons["profile.networkMode.normal"].tap()
         _ = app.staticTexts["Network mode: normal"].waitForExistence(timeout: 10)
         sleep(2)
-
+        
         // Back to Projects. If the error screen is still showing, tap Retry;
         // otherwise the list already reloaded on appear. Either way the seeded
         // project should become visible.
@@ -165,86 +165,4 @@ final class TaskFlowUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Mobile QA Automation"].waitForExistence(timeout: 10),
                       "List did not recover after retry")
     }
-}
-
-    // Тесты Наташи
-func testLogin() {
-    let app = XCUIApplication()
-    app.launch()
-
-    let emailField = app.textFields["login.emailTextField"]
-    let passwordField = app.secureTextFields["login.passwordTextField"]
-    let loginButton = app.buttons["login.submitButton"]
-
-    emailField.tap()
-    emailField.typeText("member123")
-
-    passwordField.tap()
-    passwordField.typeText("member")
-    
-    loginButton.tap()
-}
-
-func testRegistration() {
-    let app = XCUIApplication()
-    app.launch()
-
-    // Переходим на экран регистрации
-    let registerButton = app.buttons["login.registerButton"]
-    registerButton.tap()
-
-    // Находим поля регистрации
-    let emailField = app.textFields["register.emailTextField"]
-    let nameField = app.textFields["register.nameTextField"]
-    let passwordField = app.secureTextFields["register.passwordTextField"]
-
-    // Заполняем email
-    emailField.tap()
-    emailField.typeText("member123@test.com")
-
-    // Заполняем имя
-    nameField.tap()
-    nameField.typeText("Member")
-
-    // Заполняем пароль
-    passwordField.tap()
-    passwordField.typeText("member123")
-
-    // Нажимаем кнопку регистрации
-    let submitButton = app.buttons["register.submitButton"]
-    submitButton.tap()
-}
-
-func testRegistrationWithInvalidEmail() {
-    let app = XCUIApplication()
-    app.launch()
-
-    // Переходим на экран регистрации
-    let registerButton = app.buttons["login.registerButton"]
-    registerButton.tap()
-
-    // Находим поля
-    let emailField = app.textFields["register.emailTextField"]
-    let nameField = app.textFields["register.nameTextField"]
-    let passwordField = app.secureTextFields["register.passwordTextField"]
-    let submitButton = app.buttons["register.submitButton"]
-
-    // Заполняем форму некорректным email
-    emailField.tap()
-    emailField.typeText("member123")
-
-    nameField.tap()
-    nameField.typeText("Member")
-
-    passwordField.tap()
-    passwordField.typeText("member123")
-
-    // Пытаемся зарегистрироваться
-    submitButton.tap()
-
-    // Проверяем, что регистрация не произошла
-    XCTAssertTrue(
-        emailField.exists,
-        "Пользователь покинул экран регистрации с некорректным email"
-    )
 }
