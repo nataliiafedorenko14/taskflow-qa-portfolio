@@ -1,3 +1,21 @@
+# TaskFlow — QA Automation Portfolio
+
+> **Мой вклад ([Наталия Федоренко](https://github.com/nataliiafedorenko14))** — UI-автотесты на Swift/XCUITest
+> в `ios/TaskFlowUITests/`:
+>
+> - `AuthUITests.swift` — авторизация: успешный логин, неверный пароль, пустые поля, сценарий admin
+> - `RegistrationUITests.swift` — регистрация нового пользователя
+> - `Utils.swift` — хелперы: очистка текстовых полей, обработка системного алерта «Save Password»
+>   (interruption monitor)
+>
+> Практики: accessibility-идентификаторы вместо координат, явные ожидания (`waitForExistence`),
+> изоляция тестов через сброс БД (`UITEST_FRESH`), отключение анимаций.
+>
+> Базовый стенд (FastAPI-сервер + iOS-приложение TaskFlow) — учебный проект
+> [GSukh](https://github.com/GSukh), лицензия MIT.
+
+---
+
 # TaskFlow — QA Automation Playground
 
 Учебный playground для обучения тестировщиков автоматизации. Состоит из:
