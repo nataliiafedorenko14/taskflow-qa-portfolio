@@ -35,9 +35,12 @@ final class TaskFlowUITests: XCTestCase {
     private func openMainProject() {
         let row = app.buttons["projects.row.Mobile QA Automation"]
         XCTAssertTrue(row.waitForExistence(timeout: 20), "Main project did not appear")
-        XCTAssertTrue(row.wait(for: \.isHittable, toEqual: true, timeout: 10),
-                      "Main project row was not hittable")
-        row.tap()
+        // On recent iOS the row's inner Button is not hittable — tap the cell
+        // by coordinate and retry until the tasks screen appears.
+        let cell = app.cells.containing(.button, identifier: "projects.row.Mobile QA Automation").firstMatch
+        cell.tapUntilShows(app.buttons["tasks.createButton"])
+        XCTAssertTrue(app.buttons["tasks.createButton"].waitForExistence(timeout: 5),
+                      "Tasks screen did not appear")
     }
     
     // MARK: - Auth
@@ -119,8 +122,10 @@ final class TaskFlowUITests: XCTestCase {
     
     func testLogoutReturnsToLogin() {
         login()
-        XCTAssertTrue(app.tabBars.buttons["Profile"].waitForExistence(timeout: 20))
-        app.tabBars.buttons["Profile"].tap()
+        XCTAssertTrue(app.profileTab.waitForExistence(timeout: 20))
+        app.profileTab.tapUntilShows(app.buttons["profile.logoutButton"])
+        XCTAssertTrue(app.buttons["profile.logoutButton"].waitForExistence(timeout: 5),
+                      "Profile screen did not appear")
         app.buttons["profile.logoutButton"].tap()
         XCTAssertTrue(app.buttons["login.submitButton"].waitForExistence(timeout: 10),
                       "Did not return to login after logout")
@@ -130,17 +135,17 @@ final class TaskFlowUITests: XCTestCase {
     
     func testNetworkErrorShowsRetryAndRecovers() {
         login()
-        XCTAssertTrue(app.tabBars.buttons["Profile"].waitForExistence(timeout: 20))
+        XCTAssertTrue(app.profileTab.waitForExistence(timeout: 20))
         
         // Switch the server into the 500 mode.
-        app.tabBars.buttons["Profile"].tap()
-        XCTAssertTrue(app.buttons["profile.networkMode.error500"].waitForExistence(timeout: 10))
+        app.profileTab.tapUntilShows(app.buttons["profile.networkMode.error500"])
+        XCTAssertTrue(app.buttons["profile.networkMode.error500"].waitForExistence(timeout: 5))
         app.buttons["profile.networkMode.error500"].tap()
         
         // Returning to Projects forces a reload. Depending on the platform it
         // either fails immediately (no cells to swipe) or still shows cached
         // rows (swipe to refresh). Handle both so the test is stable.
-        app.tabBars.buttons["Projects"].tap()
+        app.projectsTab.tapUntilShows(app.buttons["error.retryButton"], attempts: 2)
         if !app.buttons["error.retryButton"].exists,
            app.cells.firstMatch.waitForExistence(timeout: 3) {
             app.cells.firstMatch.swipeDown()
@@ -149,8 +154,8 @@ final class TaskFlowUITests: XCTestCase {
                       "Retry button did not appear on network error")
         
         // Restore normal mode and give the server a moment to apply it.
-        app.tabBars.buttons["Profile"].tap()
-        XCTAssertTrue(app.buttons["profile.networkMode.normal"].waitForExistence(timeout: 10))
+        app.profileTab.tapUntilShows(app.buttons["profile.networkMode.normal"])
+        XCTAssertTrue(app.buttons["profile.networkMode.normal"].waitForExistence(timeout: 5))
         app.buttons["profile.networkMode.normal"].tap()
         _ = app.staticTexts["Network mode: normal"].waitForExistence(timeout: 10)
         sleep(2)
@@ -158,7 +163,7 @@ final class TaskFlowUITests: XCTestCase {
         // Back to Projects. If the error screen is still showing, tap Retry;
         // otherwise the list already reloaded on appear. Either way the seeded
         // project should become visible.
-        app.tabBars.buttons["Projects"].tap()
+        app.projectsTab.tapUntilShows(app.buttons["projects.createButton"], attempts: 2)
         if app.buttons["error.retryButton"].waitForExistence(timeout: 3) {
             app.buttons["error.retryButton"].tap()
         }

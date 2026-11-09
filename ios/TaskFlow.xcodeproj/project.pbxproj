@@ -13,6 +13,7 @@
 		3FF95C8397ACA7D6D087172A /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 939DF69173F1CA611C966B1A /* LoginView.swift */; };
 		485C66DCF6232DE50D832A50 /* TokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40D04E5743BC24CBA127B193 /* TokenStore.swift */; };
 		5141F0CD7BC535DAC2DDBC52 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F367937CF695030CA5A76C /* RegisterView.swift */; };
+		6E122F7C30A2609F005A2EEE /* TaskManagementUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E122F7B30A2609F005A2EEE /* TaskManagementUITests.swift */; };
 		6E7FE7B9305832A000616AEF /* AuthUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7FE7B83058328A00616AEF /* AuthUITests.swift */; };
 		6E7FE7BD3058545C00616AEF /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7FE7BB3058545900616AEF /* Utils.swift */; };
 		6E7FE7BF3059859400616AEF /* RegistrationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7FE7BE3059857600616AEF /* RegistrationUITests.swift */; };
@@ -56,6 +57,7 @@
 		420F8D133599640699CFDD77 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		46F367937CF695030CA5A76C /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
 		5296798CA54741B2001D7524 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		6E122F7B30A2609F005A2EEE /* TaskManagementUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskManagementUITests.swift; sourceTree = "<group>"; };
 		6E7FE7B83058328A00616AEF /* AuthUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUITests.swift; sourceTree = "<group>"; };
 		6E7FE7BB3058545900616AEF /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		6E7FE7BE3059857600616AEF /* RegistrationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationUITests.swift; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 		5F51A7B46266027324A3F027 /* TaskFlowUITests */ = {
 			isa = PBXGroup;
 			children = (
+				6E122F7B30A2609F005A2EEE /* TaskManagementUITests.swift */,
 				6E7FE7BB3058545900616AEF /* Utils.swift */,
 				6E7FE7B83058328A00616AEF /* AuthUITests.swift */,
 				6E7FE7BE3059857600616AEF /* RegistrationUITests.swift */,
@@ -309,6 +312,7 @@
 			files = (
 				6E7FE7BF3059859400616AEF /* RegistrationUITests.swift in Sources */,
 				FBE4361874832CBF13BEFD8B /* TaskFlowUITests.swift in Sources */,
+				6E122F7C30A2609F005A2EEE /* TaskManagementUITests.swift in Sources */,
 				6E7FE7B9305832A000616AEF /* AuthUITests.swift in Sources */,
 				6E7FE7BD3058545C00616AEF /* Utils.swift in Sources */,
 			);

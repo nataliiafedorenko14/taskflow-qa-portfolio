@@ -125,7 +125,7 @@ final class AuthUITests: XCTestCase {
         let createProjectButton = app.buttons["projects.createButton"]
         XCTAssertTrue(createProjectButton.waitForExistence(timeout: 20),
                       "Projects screen did not appear after admin login")
-        createProjectButton.tap()
+        createProjectButton.tapUntilShows(app.textFields["project.nameTextField"])
         
         let nameField = app.textFields["project.nameTextField"]
         XCTAssertTrue(nameField.waitForExistence(timeout: 10))

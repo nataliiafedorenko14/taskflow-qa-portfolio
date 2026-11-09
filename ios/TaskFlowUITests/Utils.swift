@@ -14,6 +14,24 @@ extension XCUIElement {
             typeText(deleteString)
         }
     }
+
+    /// On recent iOS versions SwiftUI list rows are exposed as Cells whose
+    /// inner Button is not hittable, so rows are tapped by center coordinate.
+    /// The first tap may land while the screen is still settling, so retry
+    /// until the expected marker of the destination screen appears.
+    func tapUntilShows(_ marker: XCUIElement, attempts: Int = 3) {
+        for _ in 1...attempts {
+            if marker.waitForExistence(timeout: 3) { return }
+            coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        }
+    }
+}
+
+extension XCUIApplication {
+    /// The "Projects" tab button, locale-independent (identified by its SF Symbol).
+    var projectsTab: XCUIElement { tabBars.buttons["folder"] }
+    /// The "Profile" tab button, locale-independent (identified by its SF Symbol).
+    var profileTab: XCUIElement { tabBars.buttons["person.circle"] }
 }
 
 extension XCUIApplication {

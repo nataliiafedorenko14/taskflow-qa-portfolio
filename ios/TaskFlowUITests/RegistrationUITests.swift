@@ -67,7 +67,12 @@ final class RegistrationUITests: XCTestCase {
         app.textFields["register.emailTextField"].typeText("newuser@test.local")
         
         app.buttons["register.submitButton"].tap()
-        XCTAssertTrue(app.buttons["register.submitButton"].isEnabled)
+        // With only the email filled, registration must not go through:
+        // we stay on the registration screen and the projects list does not open.
+        XCTAssertTrue(app.textFields["register.emailTextField"].waitForExistence(timeout: 5),
+                      "Registration should stay on the same screen when fields are missing")
+        XCTAssertFalse(app.buttons["projects.createButton"].waitForExistence(timeout: 3),
+                       "Registration must not succeed with only the email filled")
         
     }
     
