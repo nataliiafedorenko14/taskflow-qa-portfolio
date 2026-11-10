@@ -103,6 +103,21 @@ final class TaskFlowUITests: XCTestCase {
                       "Search returned no rows")
     }
     
+    func testSearchNoResultsShowsEmptyState() {
+        login()
+        openMainProject()
+        XCTAssertTrue(app.cells.firstMatch.waitForExistence(timeout: 10))
+        
+        let search = app.textFields["tasks.searchField"]
+        XCTAssertTrue(search.waitForExistence(timeout: 10))
+        search.tap()
+        search.typeText("zzz-no-such-task\n")
+        
+        // No matches -> the empty state replaces the list.
+        XCTAssertTrue(app.staticTexts["No tasks match"].waitForExistence(timeout: 10),
+                      "Empty state did not appear for a search without matches")
+    }
+    
     func testFilterByStatus() {
         login()
         openMainProject()
