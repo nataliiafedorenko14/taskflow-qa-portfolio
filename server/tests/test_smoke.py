@@ -37,6 +37,37 @@ def test_me(client, admin_token):
     assert r.json()["role"] == "admin"
 
 
+def test_register_then_login_and_me(client):
+    r = client.post(
+        "/api/auth/register",
+        json={"email": "qa-newbie@test.local", "password": "secret1", "full_name": "QA Newbie"},
+    )
+    assert r.status_code == 201
+    # Every registered user starts with the `member` role.
+    assert r.json()["role"] == "member"
+
+    login = client.post(
+        "/api/auth/login",
+        json={"email": "qa-newbie@test.local", "password": "secret1"},
+    )
+    assert login.status_code == 200
+    token = login.json()["access_token"]
+
+    me = client.get("/api/auth/me", headers=auth(token))
+    assert me.status_code == 200
+    assert me.json()["email"] == "qa-newbie@test.local"
+    assert me.json()["full_name"] == "QA Newbie"
+
+
+def test_register_duplicate_email_conflict(client):
+    # admin@test.local exists in the seed; re-registering it must fail.
+    r = client.post(
+        "/api/auth/register",
+        json={"email": "admin@test.local", "password": "whatever1"},
+    )
+    assert r.status_code == 409
+
+
 # --- tasks: list / filter / search / pagination -----------------------------
 
 def test_list_tasks_pagination(client, admin_token):
@@ -159,6 +190,27 @@ def test_cannot_touch_foreign_notification(client, member_token, admin_token):
     # A notification id that does not belong to the caller -> 404, not a leak.
     r = client.patch("/api/notifications/1", json={"read": True}, headers=auth(admin_token))
     assert r.status_code == 404
+
+
+# --- tags ---------------------------------------------------------------------
+
+def test_create_and_list_tag(client, admin_token):
+    r = client.post("/api/tags", json={"name": "regression", "color": "#ff9f0a"},
+                    headers=auth(admin_token))
+    assert r.status_code == 201
+    assert r.json()["name"] == "regression"
+
+    tags = client.get("/api/tags", headers=auth(admin_token)).json()
+    names = [t["name"] for t in tags]
+    # New tag is listed alongside the seeded ones.
+    assert "regression" in names
+    assert "ios" in names  # from the seed
+
+
+def test_create_duplicate_tag_conflict(client, admin_token):
+    # "ios" exists in the seed; creating it again must fail with 409.
+    r = client.post("/api/tags", json={"name": "ios"}, headers=auth(admin_token))
+    assert r.status_code == 409
 
 
 # --- test controls ----------------------------------------------------------
