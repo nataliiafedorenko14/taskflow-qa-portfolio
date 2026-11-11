@@ -25,6 +25,11 @@ def test_login_wrong_password(client):
     assert r.status_code == 401
 
 
+def test_invalid_token_rejected(client):
+    r = client.get("/api/tasks", headers=auth("not-a-real-token"))
+    assert r.status_code == 401
+
+
 def test_me(client, admin_token):
     r = client.get("/api/auth/me", headers=auth(admin_token))
     assert r.status_code == 200
@@ -48,6 +53,14 @@ def test_filter_tasks_by_status(client, admin_token):
     r = client.get("/api/tasks?status=todo", headers=auth(admin_token))
     assert r.status_code == 200
     assert all(t["status"] == "todo" for t in r.json()["items"])
+
+
+def test_filter_tasks_by_priority(client, admin_token):
+    r = client.get("/api/tasks?priority=urgent", headers=auth(admin_token))
+    assert r.status_code == 200
+    items = r.json()["items"]
+    assert items  # the seed contains urgent tasks
+    assert all(t["priority"] == "urgent" for t in items)
 
 
 def test_search_tasks(client, admin_token):
@@ -121,6 +134,31 @@ def test_member_blocked_from_foreign_project(client, member_token):
     # direct attempt to filter by an id the member can't see
     r = client.get("/api/tasks?project_id=999999", headers=auth(member_token))
     assert r.status_code == 403
+
+
+# --- notifications ------------------------------------------------------------
+
+def test_member_notification_mark_read(client, member_token):
+    # The seed gives `member` one unread notification.
+    r = client.get("/api/notifications?unread_only=true", headers=auth(member_token))
+    assert r.status_code == 200
+    unread = r.json()
+    assert len(unread) >= 1
+    nid = unread[0]["id"]
+
+    # Mark it as read -> it disappears from the unread list.
+    m = client.patch(f"/api/notifications/{nid}", json={"read": True}, headers=auth(member_token))
+    assert m.status_code == 200
+    assert m.json()["read"] is True
+
+    r2 = client.get("/api/notifications?unread_only=true", headers=auth(member_token))
+    assert all(n["id"] != nid for n in r2.json())
+
+
+def test_cannot_touch_foreign_notification(client, member_token, admin_token):
+    # A notification id that does not belong to the caller -> 404, not a leak.
+    r = client.patch("/api/notifications/1", json={"read": True}, headers=auth(admin_token))
+    assert r.status_code == 404
 
 
 # --- test controls ----------------------------------------------------------
