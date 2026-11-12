@@ -213,6 +213,70 @@ def test_create_duplicate_tag_conflict(client, admin_token):
     assert r.status_code == 409
 
 
+def test_attach_tags_to_task(client, admin_token):
+    p = client.post("/api/projects", json={"name": "TagP", "description": ""}, headers=auth(admin_token))
+    pid = p.json()["id"]
+    t = client.post(f"/api/projects/{pid}/tasks", json={"title": "taggable"}, headers=auth(admin_token))
+    tid = t.json()["id"]
+
+    # Attaching a mix of an existing tag and a brand-new one works in one call.
+    r = client.post(f"/api/tasks/{tid}/tags", json={"tags": ["ios", "brand-new"]},
+                    headers=auth(admin_token))
+    assert r.status_code == 200
+    assert sorted(r.json()["tags"]) == ["brand-new", "ios"]
+
+    # Re-attaching the same tags is idempotent — no duplicates.
+    r2 = client.post(f"/api/tasks/{tid}/tags", json={"tags": ["ios", "brand-new"]},
+                     headers=auth(admin_token))
+    assert sorted(r2.json()["tags"]) == ["brand-new", "ios"]
+
+
+# --- project members ----------------------------------------------------------
+
+def test_add_and_remove_project_member(client, admin_token):
+    p = client.post("/api/projects", json={"name": "MembersP", "description": ""},
+                    headers=auth(admin_token))
+    pid = p.json()["id"]
+
+    users = client.get("/api/users", headers=auth(admin_token)).json()
+    ro = next(u for u in users if u["email"] == "readonly@test.local")
+
+    # Add -> 201 and the user shows up in the members list.
+    a = client.post(f"/api/projects/{pid}/members",
+                    json={"user_id": ro["id"], "project_role": "viewer"},
+                    headers=auth(admin_token))
+    assert a.status_code == 201
+    members = client.get(f"/api/projects/{pid}/members", headers=auth(admin_token)).json()
+    assert any(m["user_id"] == ro["id"] and m["project_role"] == "viewer" for m in members)
+
+    # Adding the same user again -> 409.
+    dup = client.post(f"/api/projects/{pid}/members",
+                      json={"user_id": ro["id"], "project_role": "viewer"},
+                      headers=auth(admin_token))
+    assert dup.status_code == 409
+
+    # Remove -> 204 and the user is gone from the list.
+    d = client.delete(f"/api/projects/{pid}/members/{ro['id']}", headers=auth(admin_token))
+    assert d.status_code == 204
+    members_after = client.get(f"/api/projects/{pid}/members", headers=auth(admin_token)).json()
+    assert all(m["user_id"] != ro["id"] for m in members_after)
+
+
+def test_member_cannot_manage_project_members(client, member_token, admin_token):
+    # The seeded main project, where `member` has the project role `member`.
+    projects = client.get("/api/projects", headers=auth(member_token)).json()
+    pid = next(p["id"] for p in projects if p["name"] == "Mobile QA Automation")
+
+    users = client.get("/api/users", headers=auth(admin_token)).json()
+    ro = next(u for u in users if u["email"] == "readonly@test.local")
+
+    # A plain member is not a project manager -> 403 on member management.
+    r = client.post(f"/api/projects/{pid}/members",
+                    json={"user_id": ro["id"], "project_role": "viewer"},
+                    headers=auth(member_token))
+    assert r.status_code == 403
+
+
 # --- test controls ----------------------------------------------------------
 
 def test_network_mode_error500(client, admin_token):
