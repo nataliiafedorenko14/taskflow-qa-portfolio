@@ -80,6 +80,21 @@ def test_list_tasks_pagination(client, admin_token):
     assert body["total"] >= 5
 
 
+def test_pagination_beyond_last_page_returns_empty(client, admin_token):
+    r = client.get("/api/tasks?page=9999&page_size=5", headers=auth(admin_token))
+    assert r.status_code == 200
+    body = r.json()
+    # Out-of-range page is not an error: empty items, but total stays truthful.
+    assert body["items"] == []
+    assert body["total"] > 0
+
+
+def test_pagination_invalid_params_rejected(client, admin_token):
+    # page and page_size are validated (page >= 1, page_size <= 100) -> 422.
+    assert client.get("/api/tasks?page=0", headers=auth(admin_token)).status_code == 422
+    assert client.get("/api/tasks?page_size=101", headers=auth(admin_token)).status_code == 422
+
+
 def test_filter_tasks_by_status(client, admin_token):
     r = client.get("/api/tasks?status=todo", headers=auth(admin_token))
     assert r.status_code == 200
@@ -274,6 +289,32 @@ def test_member_cannot_manage_project_members(client, member_token, admin_token)
     r = client.post(f"/api/projects/{pid}/members",
                     json={"user_id": ro["id"], "project_role": "viewer"},
                     headers=auth(member_token))
+    assert r.status_code == 403
+
+
+# --- projects: get by id --------------------------------------------------------
+
+def test_get_project_by_id(client, admin_token):
+    p = client.post("/api/projects", json={"name": "GetById", "description": "fetch me"},
+                    headers=auth(admin_token))
+    pid = p.json()["id"]
+
+    r = client.get(f"/api/projects/{pid}", headers=auth(admin_token))
+    assert r.status_code == 200
+    assert r.json()["id"] == pid
+    assert r.json()["name"] == "GetById"
+    assert r.json()["description"] == "fetch me"
+
+    # Unknown id -> 404.
+    assert client.get("/api/projects/999999", headers=auth(admin_token)).status_code == 404
+
+
+def test_member_cannot_get_foreign_project(client, member_token, admin_token):
+    # "Backend Refactor" exists but `member` is not assigned to it.
+    projects = client.get("/api/projects", headers=auth(admin_token)).json()
+    foreign_id = next(p["id"] for p in projects if p["name"] == "Backend Refactor")
+
+    r = client.get(f"/api/projects/{foreign_id}", headers=auth(member_token))
     assert r.status_code == 403
 
 
