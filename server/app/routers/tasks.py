@@ -204,7 +204,6 @@ def update_task(
         task.priority = payload.priority
         changed = True
     if payload.status is not None and payload.status != task.status:
-        old_status = task.status
         task.status = payload.status
         changed = True
         # notify reporter + assignee about the status change

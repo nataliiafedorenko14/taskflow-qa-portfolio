@@ -4,11 +4,10 @@ These are the heart of the playground for QA: deterministic reset + known
 credentials + a way to switch the whole server into error/network modes
 without breaking the real stand.
 """
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from fastapi import APIRouter
 
-from ..database import SessionLocal, get_db
-from ..schemas import NetworkMode, NetworkModeRequest, SeedInfo, SeedUser
+from ..database import SessionLocal
+from ..schemas import NetworkModeRequest, SeedInfo, SeedUser
 from ..seed import SEED_USERS, seed_database
 from ..test_controls import get_network_mode, reset_network_mode, set_network_mode
 

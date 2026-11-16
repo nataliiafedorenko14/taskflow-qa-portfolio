@@ -1,5 +1,5 @@
-# CI: run the API test suite on every push to main and on pull requests.
-# Public repos get unlimited free runner minutes.
+# CI: run the API test suite and the linter on every push to main and on
+# pull requests. Public repos get unlimited free runner minutes.
 name: API tests
 
 on:
@@ -9,6 +9,29 @@ on:
   workflow_dispatch:   # allows a manual run from the Actions tab
 
 jobs:
+  # Job 1: static analysis. Runs in parallel with the tests — a failure
+  # here does not block the test job (and vice versa).
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ruff
+        run: pip install ruff
+
+      # Only the "F" rules (pyflakes): undefined names, unused imports and
+      # variables — real defects, not style. Style can be enabled later.
+      - name: Run ruff
+        run: ruff check --select F server/
+
+  # Job 2: the API test suite.
   api-tests:
     runs-on: ubuntu-latest
 

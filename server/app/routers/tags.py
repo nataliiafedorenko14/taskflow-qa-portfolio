@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from ..database import get_db
-from ..models import Tag, Task, User
+from ..models import Tag, User
 from ..permissions import can_edit_task, get_task_for_user
 from ..schemas import AttachTag, TagCreate, TagOut, TaskOut
 from ..serializers import tag_to_out, task_to_out
