@@ -1,5 +1,7 @@
 # TaskFlow — QA Automation Portfolio
 
+[![API tests](https://github.com/nataliiafedorenko14/taskflow-qa-portfolio/actions/workflows/api-tests.yml/badge.svg)](https://github.com/nataliiafedorenko14/taskflow-qa-portfolio/actions/workflows/api-tests.yml)
+
 > **Мой вклад ([Наталия Федоренко](https://github.com/nataliiafedorenko14))** — UI-автотесты на Swift/XCUITest
 > в `ios/TaskFlowUITests/`:
 >
