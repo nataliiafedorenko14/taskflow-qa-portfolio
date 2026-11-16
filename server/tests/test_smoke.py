@@ -22,7 +22,7 @@ def test_login_wrong_password(client):
         "/api/auth/login",
         json={"email": "admin@test.local", "password": "nope"},
     )
-    assert r.status_code == 401
+    assert r.status_code == 200  # INTENTIONALLY WRONG: should be 401 (CI demo)
 
 
 def test_invalid_token_rejected(client):
