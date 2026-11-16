@@ -106,7 +106,7 @@ def test_filter_tasks_by_priority(client, admin_token):
     assert r.status_code == 200
     items = r.json()["items"]
     assert items  # the seed contains urgent tasks
-    assert all(t["priority"] == "low" for t in items)  # INTENTIONALLY WRONG (CI demo #2)
+    assert all(t["priority"] == "urgent" for t in items)
 
 
 def test_search_tasks(client, admin_token):
